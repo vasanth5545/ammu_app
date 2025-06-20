@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "739898511653",
+    "project_id": "alert-imprint-346220",
+    "storage_bucket": "alert-imprint-346220.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739898511653:android:43af5e95562760f9580acc",
+        "android_client_info": {
+          "package_name": "com.example.ammu_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChYv4E2Sy2mEbhtDY-EuHVIye0n2mkpts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

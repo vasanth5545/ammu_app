@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<<<<<<< HEAD
+	<!-- Other keys like CFBundleName etc. will be here -->
+
+	<!-- Add these keys and descriptions for Bluetooth -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app needs Bluetooth to find and connect to your smart watch.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app needs Bluetooth to connect to peripherals.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to find nearby Bluetooth devices.</string>
+    <key>NSContactsUsageDescription</key>
+    <string>This app needs access to contacts to add them for SOS alerts.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to your location to provide real-time weather and heatwave data.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to your location to provide real-time weather and heatwave data.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location for tracking.</string>
+
+	<!-- Other existing keys will be here -->
+</dict>
+</plist>
+=======
+>>>>>>> 82b12b4 (Initial commit)
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Ammu App</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>ammu_app</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+<<<<<<< HEAD
+	<key>io.flutter.embedded_views_preview</key>
+    <true/>
+</dict>
+</plist>
+=======
+
+	<!-- Permissions for Bluetooth, Location, and Contacts -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app needs Bluetooth to connect to your smart watch.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app needs Bluetooth to find and connect to your smart watch.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to provide real-time weather and GPS data.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs location access to provide real-time weather and GPS data.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app needs access to contacts to add them for SOS alerts.</string>
+
+	<!-- This key is for Google Maps on iOS -->
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+
+</dict>
+</plist>
+>>>>>>> 82b12b4 (Initial commit)
