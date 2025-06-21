@@ -1,7 +1,7 @@
 # ammu_app
 
 A new Flutter project.
-<<<<<<< HEAD
+
 
 ## Getting Started
 
@@ -42,5 +42,4 @@ General App Functionality:
  * Allows for weekly, monthly, and yearly downloads of GPS data to analyze a student's interests and outcomes.
  * Promotes a general message of a "Healthy Lifestyle and Convenience."
  * Conceptualized as "A caring mother in the cloud."
-=======
->>>>>>> 82b12b4 (Initial commit)
+
