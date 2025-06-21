@@ -28,11 +28,19 @@ dependencies:
   firebase_auth: ^4.17.6
   flutter_svg: ^2.0.7
   cloud_firestore: ^4.17.5
+  firebase_storage: ^11.0.0
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1  # Use latest
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.jpg"
 
 flutter:
   uses-material-design: true
@@ -49,3 +57,8 @@ flutter:
     - assets/108.png
     - assets/staff.png
     - assets/ngo.png
+    - assets/home2.png
+    - assets/library2.png
+    - assets/park.png
+    - assets/VMschool.png
+

@@ -1,8 +1,10 @@
 
+// import 'package:ammu_app/smsservicesscreen.dart';
+import 'package:ammu_app/bluetoothscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login.dart';
-import 'homescreen.dart';
+// import 'smsservicesscreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -162,7 +164,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => const BluetoothScreen()),
           (route) => false,
         );
       }
