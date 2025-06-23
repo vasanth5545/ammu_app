@@ -46,19 +46,48 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/girl.png
-    - assets/loginpage.png
-    - assets/illustrator.png
-    - assets/google.png
-    - assets/facebook.png
-    - assets/background.png
-    - assets/police.png
-    - assets/family.png
     - assets/108.png
-    - assets/staff.png
-    - assets/ngo.png
+    - assets/add.png
+    - assets/applepay.png
+    - assets/assignments.png
+    - assets/background.png
+    - assets/computer.png
+    - assets/events.png
+    - assets/facebook.png
+    - assets/family.png
+    - assets/girl.png
+    - assets/google.png
+    - assets/home.png
     - assets/home2.png
+    - assets/illustrator.png
+    - assets/khathija.png
+    - assets/library.png
     - assets/library2.png
+    - assets/loginpage.png
+    - assets/map.png
+    - assets/marks.png
+    - assets/ngo.png
+    - assets/others.png
+    - assets/parents.png
     - assets/park.png
+    - assets/paytm.png
+    - assets/police.png
+    - assets/rose.png
+    - assets/staff.png
+    - assets/staff2.png
+    - assets/stripe.png
+    - assets/sub.png
+    - assets/teacher.png
+    - assets/upi.png
     - assets/VMschool.png
+    # - assets/incident1.png
+    # - assets/incident2.png
+    # - assets/parent_alert.png
+    # - assets/staff_alert.png
+    # - assets/performance.png
+    # - assets/smartwatch_icon.png
+    # - assets/contact_icon.png
+    - assets/staff0.jpg
+    - assets/parents1.jpg
+
 

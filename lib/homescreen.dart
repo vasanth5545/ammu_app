@@ -1,15 +1,13 @@
 import 'package:ammu_app/addallcontactsscreen.dart';
+import 'package:ammu_app/subscription_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'package:firebase_auth/firebase_auth.dart'; // Logout function-kaaga import panrom
+import 'package:firebase_auth/firebase_auth.dart';
 import 'heatwaveindicatorscreen.dart';
-// Import screens that are part of the HomeScreen or navigated to from it.
 import 'gps_tracking_screen.dart';
 import 'reports_screen.dart';
-import 'signup.dart'; // For logout functionality
-// Note: AddAllContactsScreen and HeatwaveIndicatorScreen are navigated to
-// via named routes, so direct imports are not strictly necessary here
-// but can be kept for clarity.
+import 'signup.dart'; 
+import 'deviceservice.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  // The list of pages that the BottomNavigationBar will switch between.
   late final List<Widget> _pages;
 
   @override
@@ -29,9 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _pages = [
       HomeTabPage(onNavigateToReports: () {
-        // This callback allows the HomeTabPage to change the index of the BottomNavBar.
         setState(() {
-          _currentIndex = 2; // Index 2 corresponds to the Reports screen.
+          _currentIndex = 2;
         });
       }),
       const GpsTrackingScreen(),
@@ -39,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
-  // Helper method to get the title for the AppBar based on the current index.
   String _getTitleForIndex(int index) {
     switch (index) {
       case 0:
@@ -58,18 +53,38 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_getTitleForIndex(_currentIndex)),
-        backgroundColor: const Color(0xFF0d47a1),
-        foregroundColor: Colors.white,
-        elevation: 0,
         actions: [
+           ValueListenableBuilder<bool>(
+            valueListenable: DeviceService.instance.isConnectedNotifier,
+            builder: (context, isConnected, child) {
+              return IconButton(
+                icon: Icon(
+                  isConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                  color: isConnected ? Colors.white : Colors.grey[400],
+                ),
+                onPressed: () {
+                  final message = isConnected
+                      ? 'Smartwatch connected.'
+                      : 'No smartwatch connected. Please pair a device.';
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+                  );
+                },
+                tooltip: isConnected ? 'Connected' : 'Disconnected',
+              );
+            },
+          ),
           IconButton(
               onPressed: () {
-                // More options menu-kaana placeholder
+                 Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+                  (Route<dynamic> route) => false,
+                );
+                
               },
-              icon: const Icon(Icons.more_vert))
+              icon: const Icon(Icons.card_membership))
         ],
       ),
-      // Drawer ippo HomeScreen-la irukku, so ella pages-kum work aagum.
       drawer: const AppDrawer(),
       body: IndexedStack(
         index: _currentIndex,
@@ -96,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Home screen-oda main tab, ithula SOS button and matha options irukku.
 class HomeTabPage extends StatefulWidget {
   final VoidCallback onNavigateToReports;
 
@@ -119,14 +133,7 @@ class _HomeTabPageState extends State<HomeTabPage>
     _sosController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    );
-
-    // Ripple animation-ah start panrom.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _sosController.repeat();
-      }
-    });
+    )..repeat();
   }
 
   @override
@@ -160,7 +167,6 @@ class _HomeTabPageState extends State<HomeTabPage>
           Center(
             child: GestureDetector(
               onTap: () {
-                /* SOS Logic inga varum */
               },
               child: SizedBox(
                 width: 220,
@@ -229,8 +235,7 @@ class _HomeTabPageState extends State<HomeTabPage>
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddAllContactsScreen()),
-                  );
+                        builder: (context) => const AddAllContactsScreen()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0d47a1),
@@ -271,61 +276,22 @@ class _HomeTabPageState extends State<HomeTabPage>
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const HeatwaveIndicatorScreen()),
-              );
-            },
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('Heatwave Indicator',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFF9D423), Color(0xFFFF4E50)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orange.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    )
-                  ]),
-                
-              ),
-            ),
-        
-          // const SizedBox(height: 20),
-          // GestureDetector(
-          //   onTap: widget.onNavigateToReports, // Tab-ah maathurathukku
-          //   child: _buildIndicatorCard(
-          //     title: 'View All Reports',
-          //     icon: Icons.bar_chart,
-          //     gradient: const LinearGradient(
-          //       colors: [Color(0xFF0D47A1), Color(0xFF42A5F5)],
-          //     ),
-          //     shadowColor: Colors.blue.withOpacity(0.3),
-          //   ),
-          // ),
+             onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HeatwaveIndicatorScreen()),
+                  );
+                  setState(() {});
+                },
+            child: _buildIndicatorCard(
+                title: 'Heatwave', icon: Icons.wb_sunny),
+          ),
         ],
       ),
     );
   }
 
-  // SOS button-oda ripple animation-kaana helper widget.
   Widget _buildRipple({required double controllerValue}) {
     final double radius = 70 + (150 * controllerValue);
     final double opacity = (1.0 - controllerValue) * 0.3;
@@ -335,12 +301,11 @@ class _HomeTabPageState extends State<HomeTabPage>
       height: radius * 2,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFFFF4747).withOpacity(opacity.clamp(0.0, 1.0)),
+        color: const Color(0xFFFF4744).withOpacity(opacity.clamp(0.0, 1.0)),
       ),
     );
   }
 
-  // Helpline icons-kaana helper widget.
   Widget _buildHelplineIcon(String imagePath, String label) {
     return Column(
       children: [
@@ -355,21 +320,19 @@ class _HomeTabPageState extends State<HomeTabPage>
     );
   }
 
-  // Indicator cards-kaana helper widget.
-  Widget _buildIndicatorCard({
-    required String title,
-    required IconData icon,
-    required Gradient gradient,
-    required Color shadowColor,
-  }) {
+  Widget _buildIndicatorCard({required String title, required IconData icon}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
-          gradient: gradient,
+          gradient: const LinearGradient(
+            colors: [Color(0xFFF9D423), Color(0xFFFF4E50)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: shadowColor,
+              color: Colors.orange.withOpacity(0.3),
               blurRadius: 10,
               offset: const Offset(0, 5),
             )
@@ -390,15 +353,13 @@ class _HomeTabPageState extends State<HomeTabPage>
   }
 }
 
-// App-oda drawer-la puthiya options-ah add panniyachu.
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // A helper function to show a snackbar for placeholder actions
     void showComingSoon(String featureName) {
-      Navigator.pop(context); // Close the drawer first
+      Navigator.pop(context); 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('$featureName page innum varala!')),
       );
@@ -423,40 +384,40 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dashboard_customize),
             title: const Text('Admin Dashboard'),
-            onTap: () => showComingSoon('Admin Dashboard'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/admin_dashboard');
+            }
           ),
           ListTile(
             leading: const Icon(Icons.school),
             title: const Text('Academic Follow Up'),
-            onTap: () => showComingSoon('Academic Follow Up'),
+            onTap: () => Navigator.pushNamed(context, '/academic_follow_up'),
           ),
           ListTile(
             leading: const Icon(Icons.monitor_heart),
             title: const Text('Health Follow Up'),
-            onTap: () => showComingSoon('Health Follow Up'),
+            onTap: () => Navigator.pushNamed(context, '/health_follow_up'),
           ),
           ListTile(
             leading: const Icon(Icons.medical_services),
             title: const Text('Parent Health Alert'),
-            onTap: () => showComingSoon('Parent Health Alert'),
+            onTap: () => Navigator.pushNamed(context, '/parent_health_alert'),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
-                    onTap: () async {
-            Navigator.pop(context); // Close the drawer first
-
-            await FirebaseAuth.instance.signOut(); // Real Firebase logout
-
-            if (context.mounted) {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const SignUpScreen()),
-                (Route<dynamic> route) => false, // Removes all previous routes
-              );
-            }
-          },
-
+            onTap: () async {
+              Navigator.pop(context); 
+              await FirebaseAuth.instance.signOut(); 
+              if (context.mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const SignUpScreen()),
+                  (Route<dynamic> route) => false, 
+                );
+              }
+            },
           ),
         ],
       ),

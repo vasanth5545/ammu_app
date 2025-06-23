@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:ammu_app/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'bluetooth_manager.dart'; // Import the new manager
+import 'bluetooth_manager.dart'; 
 import 'deviceservice.dart';
-import 'homescreen.dart';
 
 class SmsServicesScreen extends StatefulWidget {
   const SmsServicesScreen({super.key});
@@ -12,7 +12,8 @@ class SmsServicesScreen extends StatefulWidget {
   State<SmsServicesScreen> createState() => _SmsServicesScreenState();
 }
 
-class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProviderStateMixin {
+class _SmsServicesScreenState extends State<SmsServicesScreen>
+    with TickerProviderStateMixin {
   late final AnimationController _animationController;
   late final BluetoothManager _bluetoothManager;
   bool _isActionInProgress = false;
@@ -30,7 +31,7 @@ class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProvid
   @override
   void dispose() {
     _animationController.dispose();
-    _bluetoothManager.dispose(); // Clean up the manager
+    _bluetoothManager.dispose();
     super.dispose();
   }
 
@@ -42,21 +43,20 @@ class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProvid
       _animationController.stop();
     });
 
-    // The dialog now takes the manager as a parameter
     final BluetoothDevice? connectedDevice = await showDialog<BluetoothDevice>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => ScanAndConnectDialog(bluetoothManager: _bluetoothManager),
+      builder: (context) =>
+          ScanAndConnectDialog(bluetoothManager: _bluetoothManager),
     );
 
     if (connectedDevice != null && mounted) {
-      DeviceService.instance.saveDevice(connectedDevice);
+      await DeviceService.instance.saveDevice(connectedDevice);
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomeScreen()),
         (Route<dynamic> route) => false,
       );
     } else {
-      // Reset UI if the dialog is closed without connecting
       if (mounted) {
         setState(() {
           _isActionInProgress = false;
@@ -65,15 +65,13 @@ class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProvid
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('SMS Add on Services'),
-        backgroundColor: const Color(0xFF0d47a1),
-        elevation: 0,
+        title: const Text('Device Pairing'),
       ),
       body: Center(
         child: Column(
@@ -81,7 +79,7 @@ class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProvid
           children: [
             const Spacer(flex: 2),
             const Text(
-              'Tap on pair Button to pair\nGPS Smart Watch / Chip',
+              'Tap the button to pair your\nGPS Smartwatch or Chip',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, height: 1.5, color: Colors.black54),
             ),
@@ -112,7 +110,8 @@ class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProvid
                     backgroundColor: const Color(0xFF0d47a1),
                     child: _isActionInProgress
                         ? const CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           )
                         : const Text(
                             'Pair',
@@ -134,7 +133,8 @@ class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProvid
   }
 
   Widget _buildRipple(double initialRadius, double opacity) {
-    final double animationValue = (_animationController.value + initialRadius) % 1.0;
+    final double animationValue =
+        (_animationController.value + initialRadius) % 1.0;
     final double radius = 70 + (100 * animationValue);
     final double finalOpacity = (1.0 - animationValue) * opacity;
     return CircleAvatar(
@@ -144,7 +144,7 @@ class _SmsServicesScreenState extends State<SmsServicesScreen> with TickerProvid
   }
 }
 
-// The dialog is now much simpler and only handles UI
+
 class ScanAndConnectDialog extends StatefulWidget {
   final BluetoothManager bluetoothManager;
   const ScanAndConnectDialog({required this.bluetoothManager, super.key});
@@ -154,16 +154,16 @@ class ScanAndConnectDialog extends StatefulWidget {
 }
 
 class _ScanAndConnectDialogState extends State<ScanAndConnectDialog> {
-
   @override
   void initState() {
     super.initState();
-    // Tell the manager to start scanning when the dialog opens
     widget.bluetoothManager.startScan();
   }
 
   Future<void> _connectToDevice(BluetoothDevice device) async {
-    final connectedDevice = await widget.bluetoothManager.connectToDevice(device);
+    final connectedDevice =
+        await widget.bluetoothManager.connectToDevice(device);
+    
     if (connectedDevice != null && mounted) {
       Navigator.of(context).pop(connectedDevice);
     }
@@ -171,7 +171,6 @@ class _ScanAndConnectDialogState extends State<ScanAndConnectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    // Listen to the manager's state to rebuild the UI
     return ValueListenableBuilder<List<ScanResult>>(
       valueListenable: widget.bluetoothManager.scanResults,
       builder: (context, results, child) {
@@ -185,8 +184,16 @@ class _ScanAndConnectDialogState extends State<ScanAndConnectDialog> {
                   title: const Text("Select a Device"),
                   content: SizedBox(
                     width: double.maxFinite,
-                    child: (isScanning && results.isEmpty) || statusText.contains("Connecting")
-                        ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [const CircularProgressIndicator(), const SizedBox(height: 16), Text(statusText)]))
+                    height: 300,
+                    child: isScanning
+                        ? Center(
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                const CircularProgressIndicator(),
+                                const SizedBox(height: 16),
+                                Text(statusText)
+                              ]))
                         : results.isEmpty
                             ? Center(child: Text(statusText))
                             : ListView.builder(
@@ -194,10 +201,19 @@ class _ScanAndConnectDialogState extends State<ScanAndConnectDialog> {
                                 itemCount: results.length,
                                 itemBuilder: (context, index) {
                                   final result = results[index];
+                                  
+                                  // Device name illana, 'Unknown Device' nu kaatrom.
+                                  final deviceName = result.device.platformName.isNotEmpty
+                                    ? result.device.platformName
+                                    : (result.advertisementData.localName.isNotEmpty 
+                                        ? result.advertisementData.localName 
+                                        : 'Unknown Device');
+
                                   return ListTile(
-                                    title: Text(result.device.platformName.isNotEmpty ? result.device.platformName : 'Unknown Device'),
+                                    title: Text(deviceName),
                                     subtitle: Text(result.device.remoteId.toString()),
-                                    onTap: () => _connectToDevice(result.device),
+                                    onTap: () =>
+                                        _connectToDevice(result.device),
                                   );
                                 },
                               ),

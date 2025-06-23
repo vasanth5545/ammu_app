@@ -43,3 +43,11 @@ General App Functionality:
  * Promotes a general message of a "Healthy Lifestyle and Convenience."
  * Conceptualized as "A caring mother in the cloud."
 
+  onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddAllContactsScreen()),
+                  );
+                  setState(() {});
+                },

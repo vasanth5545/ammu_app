@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart'; // ✅ Add Firebase Core
-// import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:device_preview/device_preview.dart';
 import 'dart:async';
-import 'signup.dart';
-// vasanth
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ Required before Firebase.init
-  await Firebase.initializeApp(); // ✅ Initialize Firebase
-  runApp( MyApp());
-}
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized(); // ✅ Required before Firebase.init
-//   await Firebase.initializeApp(); // ✅ Initialize Firebase
-//   runApp(DevicePreview(builder: (context) => const MyApp()));
-// }
+// All pages are imported for route registration
+import 'signup.dart';
+import 'login.dart';
+import 'homescreen.dart';
+import 'bluetoothscreen.dart';
+import 'smsservicesscreen.dart';
+import 'addallcontactsscreen.dart';
+import 'reports_screen.dart';
+
+// Puthu pages-ah import panrom
+import 'academic_follow_up_screen.dart';
+import 'health_follow_up_screen.dart';
+import 'parent_health_alert_screen.dart';
+import 'admin_dashboard_screen.dart'; // ADDED: Admin Dashboard screen-ah import panrom.
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(DevicePreview(builder: (context) => const MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -22,16 +30,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // locale: DevicePreview.locale(context),
-      // builder: DevicePreview.appBuilder,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       title: 'AMMU App',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const SplashScreen(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF0d47a1),
+          foregroundColor: Colors.white,
+        )
+      ),
       debugShowCheckedModeBanner: false,
+      
+      // Named routes use panni, navigation-ah organize panrom.
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/signup': (context) => const SignUpScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/bluetooth': (context) => const BluetoothScreen(),
+        '/sms_services': (context) => const SmsServicesScreen(),
+        '/add_contacts': (context) => const AddAllContactsScreen(),
+        '/reports': (context) => const ReportsScreen(), 
+        '/academic_follow_up': (context) => const AcademicFollowUpScreen(),
+        '/health_follow_up': (context) => const HealthFollowUpScreen(),
+        '/parent_health_alert': (context) => const ParentHealthAlertScreen(),
+        '/admin_dashboard': (context) => const AdminDashboardScreen(), 
+      },
     );
   }
 }
 
+// SplashScreen எந்த மாற்றமும் இல்லை (No changes)
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -68,9 +99,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     Timer(const Duration(seconds: 4), () {
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const SignUpScreen()),
-        );
+        Navigator.of(context).pushReplacementNamed('/login');
       }
     });
   }
@@ -100,13 +129,6 @@ class _SplashScreenState extends State<SplashScreen>
                     height: 100,
                     width: 100,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.person,
-                        size: 80.0,
-                        color: Color(0xFF0d47a1),
-                      );
-                    },
                   ),
                 ),
               ),
@@ -122,7 +144,6 @@ class _SplashScreenState extends State<SplashScreen>
                       color: Colors.white,
                       fontSize: 48.0,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'sans-serif',
                     ),
                   ),
                   SizedBox(height: 8.0),
@@ -131,7 +152,6 @@ class _SplashScreenState extends State<SplashScreen>
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,
-                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ],
