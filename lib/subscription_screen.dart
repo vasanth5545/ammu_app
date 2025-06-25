@@ -1,3 +1,5 @@
+import 'homescreen.dart';
+import 'package:ammu_app/payment_screen.dart'; // Puthusa import pannunga
 import 'package:flutter/material.dart';
 
 class SubscriptionScreen extends StatefulWidget {
@@ -8,7 +10,7 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  String _selectedPlan = 'School Plan'; // Default-a School Plan-ah select pannirukkom
+  String _selectedPlan = 'School Plan';
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +19,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       appBar: AppBar(
         title: const Text('Subscription Plan'),
         elevation: 0,
+                // Maathapattadhu (Corrected Code)
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_outlined),
+            onPressed: () {
+              // Inga `pushReplacement`-ku badhila `pop` use pannunga
+              Navigator.pop(context);
+            },
+          ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -52,7 +62,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               topLeft: Radius.circular(15.0),
               topRight: Radius.circular(15.0),
             ),
-            // Unga assets folder-la 'sub.png' enra image irukkanum.
             child: Image.asset(
               'assets/sub.png',
               height: 180,
@@ -184,7 +193,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             if (isSelected && showBuyNow)
               ElevatedButton(
                 onPressed: () {
-                  // Payment page-ku pora logic inga varum
+                  // Inga thaan navigation logic-ah maathiruken
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PaymentScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0d47a1),
@@ -192,7 +205,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child:  Text('Buy Now',style: TextStyle(color: Colors.white),)
+                child: const Text('Buy Now', style: TextStyle(color: Colors.white)),
               ),
           ],
         ),

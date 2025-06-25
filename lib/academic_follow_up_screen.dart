@@ -1,3 +1,6 @@
+// FILE: lib/academic_follow_up_screen.dart
+// Intha file-la, performance indicator widget-ah unga photo-la irukka maari maathiruken.
+
 import 'package:flutter/material.dart';
 
 class AcademicFollowUpScreen extends StatelessWidget {
@@ -46,7 +49,7 @@ class AcademicFollowUpScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: const Text('View Overall Student Performance'),
+                child: const Text('View Overall Student Performance',style: TextStyle(color: Colors.white),),
               ),
             ),
           ],
@@ -70,30 +73,57 @@ class AcademicFollowUpScreen extends StatelessWidget {
     );
   }
 
+  // **** ITHA THAAN MAATHIRUKEN ****
   Widget _buildPerformanceIndicator() {
     return Center(
       child: SizedBox(
-        width: 180,
-        height: 180,
+        width: 200, 
+        height: 200,
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const CircularProgressIndicator(
-              value: 0.6, // Example value 60%
-              strokeWidth: 12,
-              backgroundColor: Colors.black12,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: const CircularProgressIndicator(
+                value: 0.6, // Example value 60%
+                strokeWidth: 15,
+                backgroundColor: Color(0xFFE0E0E0), // Light grey background
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0d47a1)), // Dark blue progress
+              ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/performance.png', height: 50, errorBuilder: (c,o,s) => const SizedBox()),
-                const SizedBox(height: 8),
-                const Text(
-                  '60/100',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            // Center-la irukka image
+            Image.asset(
+              'assets/computer.png', 
+              height: 130, // Unga photo-la irukka maari, image size-ah konjam perusaakiruken
+              errorBuilder: (c,o,s) => const SizedBox()
+            ), 
+            // Positioned use panni, text-ah correct-ah vechiruken
+            Positioned(
+              top: 20,
+              right: 15,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    )
+                  ]
                 ),
-              ],
+                child: const Text(
+                  '60/100',
+                  style: TextStyle(
+                    fontSize: 14, 
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87
+                  ),
+                ),
+              ),
             )
           ],
         ),

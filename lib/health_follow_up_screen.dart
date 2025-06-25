@@ -9,8 +9,11 @@ class HealthFollowUpScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Health Follow Up'),
         actions: [
-          IconButton(
-            onPressed: () {},
+           IconButton(
+            onPressed: () {
+              // Puthu page-ku navigate panra logic inga irukku
+              Navigator.pushNamed(context, '/health_alerts_history');
+            },
             icon: const Icon(Icons.notifications_active),
           )
         ],
@@ -28,9 +31,13 @@ class HealthFollowUpScreen extends StatelessWidget {
             Row(
               children: [
                 // MODIFIED: Unga puthiya images-ah inga use panrom.
-                Expanded(child: _buildAlertCard(context, 'Parents Health Alert', 'assets/parents1.jpg')),
+                Expanded(child: _buildAlertCard(context, 'Parents Health Alert', 'assets/parents1.jpg',
+                    onTap: () => Navigator.pushNamed(context, '/parent_health_alert')),
+                ),
                 const SizedBox(width: 16),
-                Expanded(child: _buildAlertCard(context, 'Staff Health Alert', 'assets/staff0.jpg')),
+                Expanded(child: _buildAlertCard(context, 'Staff Health Alert', 'assets/staff0.jpg',
+                   onTap: () => Navigator.pushNamed(context, '/staff_health_alert')),
+                ),
               ],
             ),
             const SizedBox(height: 32),
@@ -40,27 +47,30 @@ class HealthFollowUpScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildAlertCard(BuildContext context, String title, String imagePath) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
+  Widget _buildAlertCard(BuildContext context, String title, String imagePath, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+              child: Image.asset(imagePath, height: 120, width: double.infinity, fit: BoxFit.cover, errorBuilder: (c,o,s) => const SizedBox(height: 120, child: Icon(Icons.local_hospital, size: 50, color: Colors.grey))),
             ),
-            child: Image.asset(imagePath, height: 120, width: double.infinity, fit: BoxFit.cover, errorBuilder: (c,o,s) => const SizedBox(height: 120, child: Icon(Icons.local_hospital, size: 50, color: Colors.grey))),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+            ),
+          ],
+        ),
       ),
     );
+  }
   }
 
   Widget _buildDietSheetForm() {
@@ -109,7 +119,7 @@ class HealthFollowUpScreen extends StatelessWidget {
                   backgroundColor: const Color(0xFF0d47a1),
                   padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                 ),
-                child: const Text('Submit'),
+                child: const Text('Submit',style: TextStyle(color: Colors.white),),
               ),
             ),
           ],
@@ -117,4 +127,3 @@ class HealthFollowUpScreen extends StatelessWidget {
       ),
     );
   }
-}

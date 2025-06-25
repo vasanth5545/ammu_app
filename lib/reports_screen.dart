@@ -306,7 +306,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     ),
                   )
                 : _filteredReports.isEmpty && _searchController.text.isNotEmpty
-                ? Center(
+                ? Center( 
                     child: Text(
                       'No reports found for "${_searchController.text}".',
                     ),

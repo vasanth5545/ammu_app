@@ -8,10 +8,10 @@ class ContactStorageService {
 
   // The list that holds the contacts. It now starts with the new sample contacts.
   final List<Map<String, String>> _contacts = [
-    // {'name': 'sameer', 'phone': '97862 55854'},
-    // {'name': 'ajay', 'phone': '93442 25461'},
-    // {'name': 'ranjith', 'phone': '93427 22708'},
-    // {'name': 'nivetha', 'phone': '95668 25867'},
+    {'name': 'sameer', 'phone': '97862 55854'},
+    {'name': 'ajay', 'phone': '93442 25461'},
+    {'name': 'ranjith', 'phone': '93427 22708'},
+    {'name': 'nivetha', 'phone': '95668 25867'},
   ];
 
   // A method to get the current list of contacts

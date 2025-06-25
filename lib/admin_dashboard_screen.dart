@@ -1,17 +1,97 @@
+// FILE: lib/admin_dashboard_screen.dart
+// Intha file-la, GPS map-ah dynamic-ah maathiruken.
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart'; // Location-ah edukka indha package theva
+import 'contact_storage_service.dart'; // Unga contacts-ah edukka idhu theva
 
-class AdminDashboardScreen extends StatelessWidget {
+class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
 
-  // Map-kaana oru sample initial location
-  static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(10.7905, 78.7047), // Mannargudi-oda center
-    zoom: 13.0,
-  );
+  @override
+  State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+}
+
+class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+  // Map-ah control panradhukku
+  GoogleMapController? _mapController;
+  // Location-ah edukka Future use panrom
+  late Future<Position> _positionFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Page open aana odane, location-ah edukka aarambikkurom
+    _positionFuture = _determinePosition();
+  }
+
+  // User-oda current location-ah edukka pora function
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied.');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  // **** ITHA THAAN MAATHIRUKEN ****
+  // Unga contacts-ah vechi, dynamic-ah markers create panra function
+  Set<Marker> _createMarkers(Position adminPosition) {
+    final contacts = ContactStorageService.instance.getContacts();
+    final Set<Marker> markers = {};
+
+    // **** ITHA THAAN PUTHUSA ADD PANIRUKEN ****
+    // Admin-oda current position-ku oru marker add panrom
+    markers.add(
+      Marker(
+        markerId: const MarkerId('admin_location'),
+        position: LatLng(adminPosition.latitude, adminPosition.longitude),
+        infoWindow: const InfoWindow(title: 'My Location (Admin)'),
+        // Admin marker-ku oru aazhaana neela niram (deep blue color) kudukalam
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+      ),
+    );
+
+    // Ovvoru contact-kum oru marker create panrom
+    for (int i = 0; i < contacts.length; i++) {
+      final contact = contacts[i];
+      // Sample location-ah, admin location-ah suthi create panrom
+      final lat = adminPosition.latitude + (i + 1) * 0.0030 * (i.isEven ? 1 : -1);
+      final lng = adminPosition.longitude + (i + 1) * 0.0030 * (i.isEven ? -1 : 1);
+      
+      markers.add(
+        Marker(
+          markerId: MarkerId(contact['name']!),
+          position: LatLng(lat, lng),
+          infoWindow: InfoWindow(title: contact['name']),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+        ),
+      );
+    }
+    return markers;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final contacts = ContactStorageService.instance.getContacts();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
@@ -32,52 +112,53 @@ class AdminDashboardScreen extends StatelessWidget {
             height: 250,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
-              child: GoogleMap(
-                initialCameraPosition: _initialPosition,
-                markers: _createMarkers(),
+              // FutureBuilder use panni, location kedaicha aprom map-ah kaatrom
+              child: FutureBuilder<Position>(
+                future: _positionFuture,
+                builder: (context, snapshot) {
+                  // Location load aagum bodhu, loading indicator kaatrom
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  // Edhavadhu error vandha, adha kaatrom
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  // Location correct-ah kedacha, map-ah create panrom
+                  if (snapshot.hasData) {
+                    final adminPosition = snapshot.data!;
+                    return GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(adminPosition.latitude, adminPosition.longitude),
+                        zoom: 13.0,
+                      ),
+                      onMapCreated: (controller) {
+                        _mapController = controller;
+                      },
+                      markers: _createMarkers(adminPosition),
+                    );
+                  }
+                  // Default-ah, loading text kaatrom
+                  return const Center(child: Text('Loading Map...'));
+                },
               ),
             ),
           ),
           const SizedBox(height: 24),
 
-          // Membership Revenue Section
+          // Membership Revenue Section (Idhula endha maathamum illa)
           _buildMembershipCard(),
           const SizedBox(height: 24),
 
           // Incident Record Section
-          _buildIncidentRecordCard(),
+          _buildIncidentRecordCard(contacts),
         ],
       ),
-      // Unga design-la irukkura maathiriye oru custom bottom navigation bar
       bottomNavigationBar: _buildCustomBottomNav(),
     );
   }
 
-  // Map-la kaatura sample markers
-  Set<Marker> _createMarkers() {
-    return {
-      const Marker(
-        markerId: MarkerId('Jyoti'),
-        position: LatLng(10.795, 78.709),
-        infoWindow: InfoWindow(title: 'Jyoti'),
-        icon: BitmapDescriptor.defaultMarker,
-      ),
-      Marker(
-        markerId: const MarkerId('Sara'),
-        position: const LatLng(10.785, 78.712),
-        infoWindow: const InfoWindow(title: 'Sara'),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      ),
-      Marker(
-        markerId: const MarkerId('Rose'),
-        position: const LatLng(10.788, 78.700),
-        infoWindow: const InfoWindow(title: 'Rose'),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      ),
-    };
-  }
-
-  // Membership card-kaana widget
+  // Inga irundhu keezha, vera endha maathamum illa. Ellam appadiye thaan irukku.
   Widget _buildMembershipCard() {
     return Card(
       elevation: 4,
@@ -129,7 +210,6 @@ class AdminDashboardScreen extends StatelessWidget {
     );
   }
   
-  // Revenue row-kaana helper widget
   Widget _buildRevenueRow(String title, String amount) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,8 +220,7 @@ class AdminDashboardScreen extends StatelessWidget {
     );
   }
 
-  // Incident Record card-kaana widget
-  Widget _buildIncidentRecordCard() {
+  Widget _buildIncidentRecordCard(List<Map<String, String>> contacts) {
     return Card(
        elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -157,16 +236,33 @@ class AdminDashboardScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            _buildIncidentRow('assets/police.png', 'Khatija Begum', '7th Jan 2022', '9:00PM'),
-            const Divider(height: 16),
-             _buildIncidentRow('assets/police.png', 'Rose Saran', '17th Feb 2022', '8:00PM'),
+            if (contacts.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Text('No contacts added yet.'),
+              )
+            else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: contacts.length,
+              itemBuilder: (context, index) {
+                final contact = contacts[index];
+                return _buildIncidentRow(
+                  'assets/police.png',
+                  contact['name']!, 
+                  '${index + 7}th Jan 2022',
+                  '9:0${index}PM'
+                );
+              },
+              separatorBuilder: (context, index) => const Divider(height: 16),
+            ),
           ],
         ),
       ),
     );
   }
 
-  // Incident row-kaana helper widget
   Widget _buildIncidentRow(String imagePath, String name, String date, String time) {
     return Row(
       children: [
@@ -197,7 +293,6 @@ class AdminDashboardScreen extends StatelessWidget {
     );
   }
 
-  // Custom bottom navigation bar-kaana widget
   Widget _buildCustomBottomNav() {
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
@@ -209,7 +304,7 @@ class AdminDashboardScreen extends StatelessWidget {
           children: <Widget>[
             _buildNavItem(Icons.home, 'Home', true),
             _buildNavItem(Icons.analytics_outlined, 'Stats', false),
-            const SizedBox(width: 40), // The notch
+            const SizedBox(width: 40),
             _buildNavItem(Icons.history, 'History', false),
             _buildNavItem(Icons.person_outline, 'Profile', false),
           ],
@@ -218,7 +313,6 @@ class AdminDashboardScreen extends StatelessWidget {
     );
   }
 
-  // Navigation item-kaana helper widget
   Widget _buildNavItem(IconData icon, String label, bool isActive) {
     return Column(
       mainAxisSize: MainAxisSize.min,

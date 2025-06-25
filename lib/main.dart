@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:device_preview/device_preview.dart';
+// import 'package:device_preview/device_preview.dart';
 import 'dart:async';
-
+import 'staff_health_alert_screen.dart'; // Puthu staff health alert screen import panrom
 // All pages are imported for route registration
 import 'signup.dart';
 import 'login.dart';
@@ -11,17 +11,19 @@ import 'bluetoothscreen.dart';
 import 'smsservicesscreen.dart';
 import 'addallcontactsscreen.dart';
 import 'reports_screen.dart';
+// import 'staff_health_alert_screen.dart';
 
 // Puthu pages-ah import panrom
 import 'academic_follow_up_screen.dart';
-import 'health_follow_up_screen.dart';
+import 'health_follow_up_screen.dart' as health_follow_up;
 import 'parent_health_alert_screen.dart';
-import 'admin_dashboard_screen.dart'; // ADDED: Admin Dashboard screen-ah import panrom.
+import 'admin_dashboard_screen.dart'; 
+import 'package:ammu_app/health_alerts_history_screen.dart';// ADDED: Health Alerts History screen-ah import panrom.
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(DevicePreview(builder: (context) => const MyApp()));
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,8 +32,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
       title: 'AMMU App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -53,16 +53,29 @@ class MyApp extends StatelessWidget {
         '/sms_services': (context) => const SmsServicesScreen(),
         '/add_contacts': (context) => const AddAllContactsScreen(),
         '/reports': (context) => const ReportsScreen(), 
+        // '/feedback': (_) => const FeedbackScreen(),
+        // '/government_schemes': (_) => const GovernmentSchemesScreen(),
+        // '/gps_tracking': (_) => const GpsTrackingScreen(),
+        // '/bluetooth_pairing': (_) => const BluetoothPairingScreen(),
+        // '/student_marks': (_) => const StudentMarksScreen(),
+        
+        // admin dashboard screen route
+        '/admin_dashboard': (context) => const AdminDashboardScreen(),
+
+        // Academic follow up screen route
         '/academic_follow_up': (context) => const AcademicFollowUpScreen(),
-        '/health_follow_up': (context) => const HealthFollowUpScreen(),
+        
+        // Health follow up screen route
+        '/health_follow_up': (context) => const health_follow_up.HealthFollowUpScreen(),
+        '/health_alerts_history': (context) => const HealthAlertsHistoryScreen(),
         '/parent_health_alert': (context) => const ParentHealthAlertScreen(),
-        '/admin_dashboard': (context) => const AdminDashboardScreen(), 
+        '/staff_health_alert': (context) => const StaffHealthAlertScreen(), // Puthu staff health alert screen route
       },
     );
   }
 }
 
-// SplashScreen எந்த மாற்றமும் இல்லை (No changes)
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
